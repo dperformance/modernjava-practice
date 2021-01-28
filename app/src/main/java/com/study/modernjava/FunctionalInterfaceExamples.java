@@ -3,9 +3,11 @@ package com.study.modernjava;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 
 /*
@@ -88,7 +90,53 @@ public class FunctionalInterfaceExamples {
         }
         System.out.println("positiveNumbers : " + positiveNumbers);
         System.out.println("filter : " + filter(numbers, isPositive));
+
+
+        // ----------------------------------------- Supplier Function Study
+        final Supplier<String> helloSupplier = () -> "Hello ";
+        System.out.println(helloSupplier.get() + "world");
+
+        System.out.println(getVeryExpensiveValue());
+        Long start = System.currentTimeMillis();                    // number >= 0보다 크면 처리되기때문에 1번만 동작하면 되는데 모두 동작한다.
+        printIfValidIndex(1, getVeryExpensiveValue());       // 순서대로 처리하기 때문에 6초나 걸린다.
+        printIfValidIndex(-3, getVeryExpensiveValue());
+        System.out.println((System.currentTimeMillis() - start) / 1000 + "초 걸렸습니다.");
+
+        start = System.currentTimeMillis();
+        printIfValidIndex(1, () -> getVeryExpensiveValue());   // 병렬처리가 되어 3초만 걸린다.
+        printIfValidIndex(-3, () -> getVeryExpensiveValue());
+        System.out.println((System.currentTimeMillis() - start) / 1000 + "초 걸렸습니다.");
+
+
+
     }
+
+    private static String getVeryExpensiveValue() {
+        // DB 갔다오고 뭐 처리하고 3초 걸리는 함수
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "Dyson";
+    }
+
+    private static void printIfValidIndex(int number, String value) {
+        if (number >= 0) {
+            System.out.println("The value is " + value + ".");
+        } else {
+            System.out.println("Invalid");
+        }
+    }
+
+    private static void printIfValidIndex(int number, Supplier<String> value) {
+        if (number >= 0) {
+            System.out.println("The value is " + value.get() + ".");
+        } else {
+            System.out.println("Invalid");
+        }
+    }
+
 
     private static <T> List<T> filter(List<T> list, Predicate<T> filter) {
         List<T> result = new ArrayList<>();
