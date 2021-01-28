@@ -11,7 +11,13 @@ public class OopAnotherExample {
         
         // 여기부터는 OOP이용
         CalculatorService1 calculatorService1 = new CalculatorService1(new Addition());
-        System.out.println(calculatorService1.calculatee(5, 50));
+        System.out.println(calculatorService1.calculate(5, 50));
+
+        // 람다를 사용한 OOP이용
+        FpCalculatorService fpCalculatorService = new FpCalculatorService();
+        final Calculation addition = (i1, i2) -> i1 + i2;
+        System.out.println("addition : " + fpCalculatorService.calculate(addition, 11, 4));
+        System.out.println("subtraction : " + fpCalculatorService.calculate((i1, i2) -> i1 - i2, 11, 4));
     }
 }
 
@@ -43,6 +49,13 @@ class Addition implements Calculation {
     }
 }
 
+class Subtraction implements Calculation {
+    @Override
+    public int calculate(int num1, int num2) {
+        return num1 - num2;
+    }
+}
+
 class CalculatorService1 {
     private final Calculation calculation;
 
@@ -50,8 +63,18 @@ class CalculatorService1 {
         this.calculation = calculation;
     }
 
-    public int calculatee(int num1, int num2) {
+    public int calculate(int num1, int num2) {
         return calculation.calculate(num1, num2);
+    }
+}
+
+class FpCalculatorService {
+    public int calculate(Calculation calculation, int num1, int num2) {
+        if (num1 > 10 && num2 < num1) {
+            return calculation.calculate(num1, num2);
+        } else {
+            throw new IllegalArgumentException("Invalid input num1 : " + num1 + ", num2 : " + num2);
+        }
     }
 }
 
