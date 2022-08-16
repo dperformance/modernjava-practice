@@ -35,8 +35,12 @@ public class FunctionalInterfaceExamples {
         Function<String, Integer> toInt1 = (final String value) -> {
             return Integer.parseInt(value);
         };
+
         // 방법 3
         Function<String, Integer> toInt2 = (value) -> Integer.parseInt(value);
+
+        // 방법 4
+        Function<String, Integer> toInt3 = Integer::parseInt;
 
         final Integer number1 = toInt1.apply("123");
         final Integer number2 = toInt2.apply("444");
